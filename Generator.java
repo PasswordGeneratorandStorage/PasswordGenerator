@@ -1,4 +1,5 @@
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -32,20 +33,44 @@ public class Generator {
         nouns = new ArrayList<>();
         adverbs = new ArrayList<>();
         String[] filePaths = {"src/AppData/parts/adverbs.txt", "src/AppData/parts/adjectives.txt", "src/AppData/parts/nouns.txt"};
-        for (int i = 0; i < 3; i ++) {
-
+        try{
+            list = new File(filePaths[0]);
+            Scanner s = new Scanner(list);
+            while(s.hasNext()) {
+                adverbs.add(s.nextLine());
+            }
+            list = new File(filePaths[1]);
+            s = new Scanner(list);
+            while(s.hasNext()) {
+                adjectives.add(s.nextLine());
+            }
+            list = new File(filePaths[2]);
+            s = new Scanner(list);
+            while(s.hasNext()) {
+                nouns.add(s.nextLine());
+            }
+        } catch(FileNotFoundException fnf) {
+            System.out.println(fnf.getMessage());
         }
-        list = new File("src\\AppData\\words.txt");
         r = new Random();
 
 
 
     }
+
     public String generateWord() {
-        Random r = new Random();
-        int rand = r.nextInt(9000);
-        return words.get(rand);
+        return words.get(r.nextInt(words.size()));
     }
+    public String generateAdjective() {
+        return adjectives.get(r.nextInt(adjectives.size()));
+    }
+    public String generateNoun() {
+        return nouns.get(r.nextInt(nouns.size()));
+    }
+    public String generateAdverb() {
+        return adverbs.get(r.nextInt(adverbs.size() -1 ));
+    }
+
     public char genSpecial() {
         char[] chars = {'!', '@', '#', '$', '%', '^', '&', '*', '-', '/'};
         return chars[r.nextInt(chars.length)];
@@ -53,7 +78,7 @@ public class Generator {
     }
 
 
-
+    //generatePass generates three random words that are of the 10000 most commonly used words in the english language.
     public String generatePass(int charLowLimit, int charLimit, boolean genSpecial) {
         boolean correctSize = false;
         String[] words = new String[3];
@@ -84,10 +109,23 @@ public class Generator {
             return passWords;
         }
     }
-
+    //GenPass generates an adverb, an adjective and a noun, in that order.
     public String genPass(int lowLimit, int upLimit, boolean genSpecial) {
-        String finalPass = "";
+        String finalPass;
+        while(true) {
+            if(genSpecial) {
+                finalPass = genSpecial() + capitalize(generateAdverb()) + capitalize(generateAdjective()) + capitalize(generateNoun());
+            } else {
+                finalPass = generateAdverb() + generateAdjective() + generateNoun();
+            }
+            if(finalPass.length() < upLimit && finalPass.length() >= lowLimit) {
+                break;
+            }
+        }
         return finalPass;
+    }
+    private String capitalize(String line) {
+        return Character.toUpperCase(line.charAt(0)) + line.substring(1);
     }
 
 }

@@ -1,12 +1,10 @@
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 public class MainGUI {
 
     public static void main(String[] args) {
         for(int i = 0; i < 10; i++) {
-            Generator g= new Generator();
-            System.out.println(g.generatePass(10, 20, false));
+            Generator g= new Generator(true);
+            System.out.println(g.genPass(19, 20, true));
         }
         /*
         while(true) {
