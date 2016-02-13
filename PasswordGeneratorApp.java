@@ -5,7 +5,6 @@ import java.util.Scanner;
 
 public class PasswordGeneratorApp {
     public static void main(String[] args) {
-        /*
         Generator g = new Generator();
         Scanner userIn = new Scanner(System.in);
         System.out.println("Please choose:\n1)Log me in.\n2)New User");
@@ -141,7 +140,6 @@ public class PasswordGeneratorApp {
             e.getMessage();
         }
         return user;
-        */
     }
 
 }
