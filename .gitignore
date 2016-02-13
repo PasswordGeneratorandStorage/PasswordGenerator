@@ -4,10 +4,10 @@ ehthumbs.db
 .idea/
 # Folder config file
 Desktop.ini
-
+*.ser
 # Recycle Bin used on file shares
 $RECYCLE.BIN/
-
+userlist.txt
 # Windows Installer files
 *.cab
 *.msi
