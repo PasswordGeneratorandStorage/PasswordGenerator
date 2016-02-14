@@ -12,9 +12,10 @@ public class User implements Serializable {
         this.userName = userName;
     }
 
-    public void addAccount(String accountName, String pass) {
-        accounts.add(new Account(pass, accountName));
+    public void addAccount(String accountName, String username, String pass) {
+        accounts.add(new Account(accountName, accountName, pass));
     }
+
     public boolean changePass(Account account, String newPass) {
         //If this user has this account, we save. If the account hasn't been added, return false
         if(accounts.contains(account)) {
@@ -36,7 +37,7 @@ public class User implements Serializable {
     public Account getAccount(String accountName) {
         Account account = null;
         for(Account a: accounts) {
-            if(a.getAccount().equalsIgnoreCase(accountName)) {
+            if(a.getUsername().equalsIgnoreCase(accountName)) {
                 account = a;
                 break;
             }

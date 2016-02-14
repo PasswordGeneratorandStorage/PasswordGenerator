@@ -2,24 +2,32 @@ import java.io.Serializable;
 
 public class Account implements Serializable {
     private String password;
-    private String account;
-    private long timeCreated;
+    private String username;
+    private String accountName;
 
-    public Account(String password, String account) {
+    public String getAccountName() {
+        return accountName;
+    }
+
+    public void setAccountName(String accountName) {
+        this.accountName = accountName;
+    }
+
+    public Account(String accountName, String username, String password) {
         this.password = password;
-        this.account = account;
-        timeCreated = System.currentTimeMillis();
+        this.username = username;
+        this.accountName = accountName;
     }
     public String getPass() {
         return password;
     }
-    public String getAccount() {
-        return account;
+    public String getUsername() {
+        return username;
     }
     public void setPass(String pass) {
         password = pass;
     }
-    public void setAccount(String account) {
-        this.account = account;
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

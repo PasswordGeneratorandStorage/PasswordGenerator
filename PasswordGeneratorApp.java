@@ -88,7 +88,7 @@ public class PasswordGeneratorApp {
                     System.out.println("Here's your password:)");
                     System.out.println(pass);
                     if(newUser != null) {
-                        newUser.addAccount(accountName, pass);
+                        newUser.addAccount("Google",accountName, pass);
                     }
                     saveUser(newUser);
 

@@ -3,8 +3,9 @@ public class MainGUI {
 
     public static void main(String[] args) {
         for(int i = 0; i < 10; i++) {
-            Generator g= new Generator(true);
-            System.out.println(g.genPass(19, 20, true));
+            Generator g= new Generator();
+            System.out.print(g.generatePass(i+10, i+15, true));
+            System.out.println(g.genNums(10-i));
         }
         /*
         while(true) {
