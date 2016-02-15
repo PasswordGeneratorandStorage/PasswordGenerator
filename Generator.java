@@ -5,22 +5,16 @@ import java.util.Random;
 import java.util.Scanner;
 
 
-/*TODO: Decide whats better: generating three random words, or a adverb, adjective and a noun.
- *
- *TODO: @FIXME If the user enters some kind of edge case character amount, say 100 or 1, The generator will infinitely loop. Need to add edge-case handler, or limit user input.
- */
-
 public class Generator {
 
     private Random r;
-    File list;
+    private File list;
     private ArrayList<String> words;
-    private ArrayList<String> adverbs;
-    private ArrayList<String> adjectives;
-    private ArrayList<String> nouns;
+    private int numFails;
 
 
     public Generator()  {
+            numFails = 0;
             list = new File("src\\AppData\\words.txt");
             r = new Random();
             words = new ArrayList<>();
@@ -32,48 +26,30 @@ public class Generator {
         } catch (FileNotFoundException fnf) {
             fnf.printStackTrace();
         }
-        adjectives = new ArrayList<>();
-        nouns = new ArrayList<>();
-        adverbs = new ArrayList<>();
-        String[] filePaths = {"src/AppData/parts/adverbs.txt", "src/AppData/parts/adjectives.txt", "src/AppData/parts/nouns.txt"};
-        try{
-            list = new File(filePaths[0]);
-            Scanner s = new Scanner(list);
-            while(s.hasNext()) {
-                adverbs.add(s.nextLine());
-            }
-            list = new File(filePaths[1]);
-            s = new Scanner(list);
-            while(s.hasNext()) {
-                adjectives.add(s.nextLine());
-            }
-            list = new File(filePaths[2]);
-            s = new Scanner(list);
-            while(s.hasNext()) {
-                nouns.add(s.nextLine());
-            }
-        } catch(FileNotFoundException fnf) {
-            System.out.println(fnf.getMessage());
-        }
         r = new Random();
-
     }
 
-
+    public int getNumFails() {
+        int tmp = numFails;
+        numFails = 0;
+        return tmp;
+    }
     public String generateWord() {
-        return words.get(r.nextInt(words.size()));
+        String word;
+        while(true) {
+            word = words.get(r.nextInt(words.size()));
+            if(word.length() > 0) {
+                break;
+            }
+        }
+        return word;
     }
-
-    public String generateAdjective() {
-        return adjectives.get(r.nextInt(adjectives.size()));
-    }
-
-    public String generateNoun() {
-        return nouns.get(r.nextInt(nouns.size()));
-    }
-
-    public String generateAdverb() {
-        return adverbs.get(r.nextInt(adverbs.size() -1 ));
+    public String generateWords(int numWords) {
+        String words = "";
+        for(int i = 0; i < numWords; i++) {
+            words = words+capitalize(generateWord());
+        }
+        return words;
     }
 
     /*************************
@@ -95,51 +71,22 @@ public class Generator {
      * @return randomized password that fits specified criteria.
      ********************************************************************/
     public String generatePass(int charLowLimit, int charLimit, boolean genSpecial) {
+        assert charLowLimit != charLimit && charLimit > charLowLimit;
+        String password = "";
+        int numWords = charLimit / 6;
         boolean correctSize = false;
-        String[] words = new String[3];
-        String passWords = null;
         while(!correctSize) {
-            for(int i = 0; i < 3; i++) {
-                words[i] = capitalize(generateWord());
-            }
-            if(charLimit <= 10) {
-                passWords = words[0] + words[1];
-            } else {
-                passWords = words[0] + words[1] + words[2];
-            }
-            if(passWords.length() >= charLowLimit && passWords.length() < charLimit) {
+            password = generateWords(numWords);
+            if(password.length() < charLimit && password.length() >= charLowLimit) {
                 correctSize = true;
-            }
-        }
-        char sp;
-        if(genSpecial) {
-            sp = genSpecial();
-            return String.format("%s%s",sp, passWords);
-        } else {
-            return passWords;
-        }
-    }
-
-    /*********************************************************************
-     * Generates adverb, adjective, and a noun in that order.
-     * @param lowLimit lowest limit of characters allowed
-     * @param upLimit highest limit of characters allowed
-     * @param genSpecial specifies whether to generate special character
-     * @return randomized password that fits specified criteria.
-     ********************************************************************/
-    public String genPass(int lowLimit, int upLimit, boolean genSpecial) {
-        String finalPass;
-        while(true) {
-            if(genSpecial) {
-                finalPass = genSpecial() + capitalize(generateAdverb()) + capitalize(generateAdjective()) + capitalize(generateNoun());
             } else {
-                finalPass = generateAdverb() + generateAdjective() + generateNoun();
-            }
-            if(finalPass.length() < upLimit && finalPass.length() >= lowLimit) {
-                break;
+                numFails++;
             }
         }
-        return finalPass;
+        if(genSpecial) {
+            password = genSpecial() + password;
+        }
+        return password;
     }
 
     /***********************************************************

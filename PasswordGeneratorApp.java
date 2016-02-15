@@ -68,7 +68,7 @@ public class PasswordGeneratorApp {
                     String accountName = userIn.next();
                     System.out.println("We're going to generate a password for you.\nPlease enter your minimum character limit");
                     int charLowLimit = userIn.nextInt();
-                    System.out.println("Got it, what about the max character limit?");
+                    System.out.println("Got it, what about the maxField character limit?");
                     int charLimit = userIn.nextInt();
                     System.out.println("Do you want to have a special character?");
                     String spCharacter = userIn.next();
