@@ -4,6 +4,12 @@ public class Account implements Serializable {
     private String password;
     private String username;
     private String accountName;
+    private User blah;
+    public Account(String accountName, String username, String password) {
+        this.password = password;
+        this.username = username;
+        this.accountName = accountName;
+    }
 
     public String getAccountName() {
         return accountName;
@@ -13,11 +19,7 @@ public class Account implements Serializable {
         this.accountName = accountName;
     }
 
-    public Account(String accountName, String username, String password) {
-        this.password = password;
-        this.username = username;
-        this.accountName = accountName;
-    }
+
     public String getPass() {
         return password;
     }

@@ -8,23 +8,22 @@ import java.util.Scanner;
 public class Generator {
 
     private Random r;
-    private File list;
     private ArrayList<String> words;
     private int numFails;
 
 
     public Generator()  {
-            numFails = 0;
-            list = new File("src\\AppData\\words.txt");
-            r = new Random();
-            words = new ArrayList<>();
+        numFails = 0;
+        File list = new File("src\\AppData\\words.txt");
+        r = new Random();
+        words = new ArrayList<>();
         try {
             Scanner s = new Scanner(list);
             while(s.hasNext()) {
-                words.add(s.nextLine());
-            }
+            words.add(s.nextLine());
+        }
         } catch (FileNotFoundException fnf) {
-            fnf.printStackTrace();
+        fnf.printStackTrace();
         }
         r = new Random();
     }
@@ -34,6 +33,7 @@ public class Generator {
         numFails = 0;
         return tmp;
     }
+
     public String generateWord() {
         String word;
         while(true) {
@@ -63,17 +63,19 @@ public class Generator {
 
 
     /********************************************************************
-     * Generates three of the most commonly used words in english.
+     * Generates a random assortment of commonly used words.
      * Unless charLimit <= 10, then only two words.
      * @param charLowLimit lowest limit of characters allowed
      * @param charLimit highest limit of characters allowed
      * @param genSpecial specifies whether to generate special character
      * @return randomized password that fits specified criteria.
      ********************************************************************/
-    public String generatePass(int charLowLimit, int charLimit, boolean genSpecial) {
+    public String generatePass(int charLowLimit, int charLimit, int digitCount, boolean genSpecial) {
         assert charLowLimit != charLimit && charLimit > charLowLimit;
         String password = "";
-        int numWords = charLimit / 6;
+        //Subtracts number of letters from the limit that are going to be numbers. (Stops too many characters)
+        charLimit = charLimit - digitCount;
+        int numWords = charLimit / 7;
         boolean correctSize = false;
         while(!correctSize) {
             password = generateWords(numWords);
@@ -86,6 +88,7 @@ public class Generator {
         if(genSpecial) {
             password = genSpecial() + password;
         }
+        password = password + genDigits(digitCount);
         return password;
     }
 
@@ -98,12 +101,12 @@ public class Generator {
     }
 
     /******************************************************
-     * @param numNums number of random digits to generate
+     * @param numDigits number of random digits to generate
      * @return a string of random digits
      *****************************************************/
-    public String genNums(int numNums) {
+    public String genDigits(int numDigits) {
         String nums = "";
-        for(int i = 0; i <= numNums; i++) {
+        for(int i = 0; i < numDigits; i++) {
             nums = nums + Integer.toString(r.nextInt(10));
         }
         return nums;

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class User implements Serializable {
     private ArrayList<Account> accounts;
     private String userName;
-    private String passKey;
 
     public User(String userName) {
         accounts = new ArrayList<>();
@@ -13,7 +12,7 @@ public class User implements Serializable {
     }
 
     public void addAccount(String accountName, String username, String pass) {
-        accounts.add(new Account(accountName, accountName, pass));
+        accounts.add(new Account(accountName, username, pass));
     }
 
     public boolean changePass(Account account, String newPass) {
