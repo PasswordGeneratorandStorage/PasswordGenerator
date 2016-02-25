@@ -44,7 +44,7 @@ public class MainGUI extends JPanel implements ActionListener{
 
         digitField = new JTextField(20);
         digitField.addActionListener(this);
-        digitField.setText("Min");
+        digitField.setText(Integer.toString(generator.getNumWords()));
         digitField.setActionCommand("Digit Count");
         digitField.setFont(font);
         add(digitField);

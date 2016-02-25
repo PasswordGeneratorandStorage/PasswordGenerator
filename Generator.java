@@ -28,13 +28,11 @@ public class Generator {
         r = new Random();
     }
 
-    public int getNumFails() {
-        int tmp = numFails;
-        numFails = 0;
-        return tmp;
+    public int getNumWords() {
+        return words.size();
     }
 
-    public String generateWord() {
+    private String generateWord() {
         String word;
         while(true) {
             word = words.get(r.nextInt(words.size()));
@@ -44,7 +42,13 @@ public class Generator {
         }
         return word;
     }
-    public String generateWords(int numWords) {
+
+    /**
+     * Generates number of words requested by int passed
+     * @param numWords number of words desired
+     * @return String of capitalized words
+     */
+    private String generateWords(int numWords) {
         String words = "";
         for(int i = 0; i < numWords; i++) {
             words = words+capitalize(generateWord());
@@ -55,8 +59,8 @@ public class Generator {
     /*************************
      * @return <char>a random special character.</char>
      ************************/
-    public char genSpecial() {
-        char[] chars = {'!', '@', '#', '$', '%', '^', '&', '*', '-', '/'};
+    private char genSpecial() {
+        char[] chars = {'!', '@', '#', '$', '%', '^', '&', '*', '-', '/','?'};
         return chars[r.nextInt(chars.length)];
 
     }
