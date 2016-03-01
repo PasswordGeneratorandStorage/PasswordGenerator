@@ -1,7 +1,7 @@
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
-.idea/
+.idea/*
 # Folder config file
 Desktop.ini
 *.ser
@@ -16,7 +16,7 @@ userlist.txt
 *.class
 # Windows shortcuts
 *.lnk
-
+*.db
 # =========================
 # Operating System Files
 # =========================

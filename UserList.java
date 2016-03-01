@@ -2,8 +2,13 @@
  * Created by Myles Haynes on 2/28/2016.
  *
  */
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.security.*;
 
 public class UserList {
 
@@ -26,12 +31,43 @@ public class UserList {
     }
 
     //TODO: Ian, this is where the encryption should be done, and the file save
-    public void saveUser(User user, String key) {
-        //Inputs user, and encrypts with key implement however you'd like:)
+    public void saveUser(User user, int key) {
+        PrintWriter outputFile = null;
+        try {
+            outputFile = new PrintWriter("src\\AppData\\users\\" + user.getUsersName()+".db");
+        } catch (FileNotFoundException e)
+        {
+        } finally
+        {
+            for(Account a:user.getAccounts())
+            {
+                Encryption encryption = new Encryption();
+                String original = (a.getAccountName()+","+a.getUsername()+","+a.getPass());
+                outputFile.println(encryption.encode(original, key));
+            }
+            outputFile.close();
+        }
+
     }
     //TODO: Ian, load, with input of key and name. I'm thinking we add a file with that persons name.
-    public User loadUser(String name, String key) {
-        //Inputs name, and encrypts with key string.
-        return null;
+    public User loadUser(String name, int key) {
+        User finalUser = new User(name);
+        Scanner readDB = null;
+        File userFile;
+        Encryption decrypt = new Encryption();
+        try
+        {
+            userFile = new File("src\\AppData\\users\\" + name + ".db");
+            readDB = new Scanner(userFile);
+            while(readDB.hasNext())
+            {
+                String[] delimited = decrypt.decode(readDB.nextLine(), key).split(",");
+                finalUser.addAccount(delimited[0], delimited[1], delimited[2]);
+            }
+        } catch (FileNotFoundException e)
+        {
+        }
+
+        return finalUser;
     }
 }
