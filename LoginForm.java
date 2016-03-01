@@ -13,21 +13,16 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.File;
-import java.net.URL;
-
 public class LoginForm extends Application {
 
 
     public static void main(String[] args) {
-
-        System.out.println(new File(".").getAbsolutePath());
         launch(args);
     }
 
 
     public void start(Stage primaryStage) throws Exception {
-
+        //Loads list of users, so we can tell who's in the database and not.
         UserList userList = new UserList();
 
         primaryStage.setTitle("Welcome");

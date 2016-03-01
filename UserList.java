@@ -66,6 +66,7 @@ public class UserList {
             }
         } catch (FileNotFoundException e)
         {
+
         }
 
         return finalUser;

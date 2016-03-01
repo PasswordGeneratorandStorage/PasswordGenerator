@@ -28,10 +28,6 @@ public class Generator {
         r = new Random();
     }
 
-    public int getNumWords() {
-        return words.size();
-    }
-
     private String generateWord() {
         String word;
         while(true) {
@@ -75,15 +71,15 @@ public class Generator {
      * @return randomized password that fits specified criteria.
      ********************************************************************/
     public String generatePass(int charLowLimit, int charLimit, int digitCount, boolean genSpecial) {
-        assert charLowLimit != charLimit && charLimit > charLowLimit;
         String password = "";
         //Subtracts number of letters from the limit that are going to be numbers. (Stops too many characters)
         charLimit = charLimit - digitCount;
+
         int numWords = charLimit / 7;
         boolean correctSize = false;
         while(!correctSize) {
             password = generateWords(numWords);
-            if(password.length() < charLimit && password.length() >= charLowLimit) {
+            if(password.length() <= charLimit && password.length() >= charLowLimit) {
                 correctSize = true;
             } else {
                 numFails++;
