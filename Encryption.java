@@ -41,4 +41,22 @@ public class Encryption
         return outputString;
     }
 
+    /**
+     * This method uses an algorithm to generate a key from the users password
+     *
+     * @param password The users password
+     * @return An integer with the key
+     */
+    public int getKey(String password)
+    {
+        int counter = 1;
+        int total = 0;
+        for(char a:password.toCharArray())
+        {
+            total+=a;
+            counter+=1;
+        }
+        return (total/counter)/2;
+    }
+
 }
