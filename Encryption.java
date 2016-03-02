@@ -1,3 +1,9 @@
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+
 /**
  * This class is provided for encryption on the project
  */
@@ -51,12 +57,47 @@ public class Encryption
     {
         int counter = 1;
         int total = 0;
-        for(char a:password.toCharArray())
+        for (char a : password.toCharArray())
         {
-            total+=a;
-            counter+=1;
+            total += a;
+            counter += 1;
         }
-        return (total/counter)/2;
+        return (total / counter) / 2;
     }
 
+    public void savePassword(String username, String password)
+    {
+        try
+        {
+            FileWriter writer = new FileWriter("src\\AppData\\users\\users.db", true);
+            PrintWriter printWriter = new PrintWriter(writer);
+            printWriter.println(getHash(username)+","+getHash(password));
+            printWriter.close();
+        } catch (Exception e)
+        {
+            System.out.println("Database not found");
+        }
+    }
+
+    public static String getHash(String base)
+    {
+        try
+        {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(base.getBytes("UTF-8"));
+            StringBuffer hexString = new StringBuffer();
+
+            for (int i = 0; i < hash.length; i++)
+            {
+                String hex = Integer.toHexString(0xff & hash[i]);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+
+            return hexString.toString();
+        } catch (Exception ex)
+        {
+            throw new RuntimeException(ex);
+        }
+    }
 }
