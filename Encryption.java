@@ -1,7 +1,4 @@
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.security.MessageDigest;
 
 /**
@@ -16,13 +13,16 @@ public class Encryption
      * @param original The string that is to be encrypted
      * @return the input in ROT47
      */
-    public String encode(String original, int key)
+    public static String encode(String original, int key)
     {
         String outputString = "";
         for (int i = 0; i < original.length(); i++)
         {
             char current = original.charAt(i);
-            current += key;
+            if (i % 2 == 0)
+                current += key;
+            else
+                current -= key;
             outputString += current;
         }
         return outputString;
@@ -35,13 +35,16 @@ public class Encryption
      * @param encrypted ROT47 text
      * @return The input in english
      */
-    public String decode(String encrypted, int key)
+    public static String decode(String encrypted, int key)
     {
         String outputString = "";
         for (int i = 0; i < encrypted.length(); i++)
         {
             char current = encrypted.charAt(i);
-            current -= key;
+            if (i % 2 == 0)
+                current -= key;
+            else
+                current += key;
             outputString += current;
         }
         return outputString;
@@ -53,7 +56,7 @@ public class Encryption
      * @param password The users password
      * @return An integer with the key
      */
-    public int getKey(String password)
+    public static int getKey(String password)
     {
         int counter = 1;
         int total = 0;
@@ -65,13 +68,13 @@ public class Encryption
         return (total / counter) / 2;
     }
 
-    public void savePassword(String username, String password)
+    public static void savePassword(String username, String password)
     {
         try
         {
             FileWriter writer = new FileWriter("src\\AppData\\users\\users.db", true);
             PrintWriter printWriter = new PrintWriter(writer);
-            printWriter.println(getHash(username)+","+getHash(password));
+            printWriter.println(getHash(username) + "," + getHash(password));
             printWriter.close();
         } catch (Exception e)
         {
