@@ -2,13 +2,9 @@
  * Created by Myles Haynes on 2/28/2016.
  *
  */
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.security.*;
+
+import java.io.*;
+import java.util.*;
 
 public class UserList {
 
@@ -30,13 +26,13 @@ public class UserList {
         return false;
     }
 
-    //TODO: Ian, this is where the encryption should be done, and the file save
     public void saveUser(User user, int key) {
         PrintWriter outputFile = null;
         try {
             outputFile = new PrintWriter("src\\AppData\\users\\" + user.getUsersName()+".db");
         } catch (FileNotFoundException e)
         {
+            System.out.println("Creating user save file");
         } finally
         {
             for(Account a:user.getAccounts())
@@ -49,7 +45,6 @@ public class UserList {
         }
 
     }
-    //TODO: Ian, load, with input of key and name. I'm thinking we add a file with that persons name.
     public User loadUser(String name, int key) {
         User finalUser = new User(name);
         Scanner readDB = null;
@@ -66,6 +61,7 @@ public class UserList {
             }
         } catch (FileNotFoundException e)
         {
+            System.out.println("User does not exist. Creating new user.");
         }
 
         return finalUser;
