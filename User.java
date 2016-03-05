@@ -3,12 +3,23 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class User implements Serializable {
+
+    private String pass;
     private ArrayList<Account> accounts;
     private String userName;
 
     public User(String userName) {
         accounts = new ArrayList<>();
         this.userName = userName;
+    }
+    public User(String userName, String pass) {
+        accounts = new ArrayList<>();
+        this.userName = userName;
+        this.pass = pass;
+    }
+
+    public String getPass() {
+        return pass;
     }
 
     public void addAccount(String accountName, String username, String pass) {

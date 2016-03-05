@@ -4,10 +4,11 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -21,56 +22,153 @@ public class LoginForm extends Application {
     }
 
 
+    String username;
+    Stage primaryStage;
+    Text sceneTitle;
+    TextField textField;
+    Button btn;
+    GridPane grid;
+    UserList userList;
+
     public void start(Stage primaryStage) throws Exception {
+
+        this.primaryStage = primaryStage;
+
         //Loads list of users, so we can tell who's in the database and not.
-        UserList userList = new UserList();
+        userList = new UserList();
+        User u = new User("user", "password");
+        u.addAccount("Google", "googes", "chicken");
+        u.addAccount("Reddit", "name", "chicken");
+        u.addAccount("Tests", "username", "blah");
+        u.addAccount("Test", "username", "blah");
+        u.addAccount("TESTING123", "TJLKSJDKFLJSDF", "KSDJFLKSDJF");
+        userList.saveUser(u, u.getPass());
 
         primaryStage.setTitle("Welcome");
-        GridPane grid = new GridPane();
+        grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Text sceneTitle = new Text("Welcome");
+        sceneTitle = new Text("Welcome.\nPlease enter your name.");
         sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(sceneTitle, 0,0,2,1);
 
-        Label userName = new Label("User Name:");
-        grid.add(userName, 0, 1);
+        textField = new TextField();
+        textField.setPromptText("Case sensitive");
+        grid.add(textField, 0, 1, 2, 1);
 
-        TextField userNameField = new TextField();
-        grid.add(userNameField, 1, 1);
 
-        Label pw = new Label("Master Password");
-        grid.add(pw, 0, 2);
-
-        TextField passwordField = new TextField();
-        grid.add(passwordField, 1, 2);
-
-        Button btn = new Button("Sign in");
-        HBox hbBtn = new HBox(10);
-        hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
-        hbBtn.getChildren().add(btn);
-        grid.add(hbBtn, 1, 4);
+        btn = new Button("Next");
+        btn.setAlignment(Pos.CENTER_RIGHT);
+        grid.add(btn, 2, 2);
 
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
         btn.setOnAction(event -> {
             //TODO: Create and show MainGUI, passing in loaded User
-            //This code is just to test.
-            User u = new User("Myles");
-            u.addAccount("Google", "Myles", "Password");
-            u.addAccount("Outlook", "Username", "Password");
-            u.addAccount("reddit", "username", "password");
-            primaryStage.close();
-            //This code will stay.
-            new MainGUI(u);
+            username = textField.getText();
+            if(userList.checkIfUserExists(username)) showExistingUserLogin();
+            else showNewUserMenu();
 
         });
 
-        primaryStage.setScene(new Scene(grid, 300, 275));
+        primaryStage.setScene(new Scene(grid));
         primaryStage.show();
     }
 
+    public void showExistingUserLogin() {
+
+        PasswordField pField = new PasswordField();
+        textField.visibleProperty().bind(pField.visibleProperty().not());
+        textField.setText("");
+
+        CheckBox showPass = new CheckBox("Show password?");
+
+        textField.managedProperty().bind(showPass.selectedProperty());
+        textField.visibleProperty().bind(showPass.selectedProperty());
+
+        pField.managedProperty().bind(showPass.selectedProperty().not());
+        pField.visibleProperty().bind(showPass.selectedProperty().not());
+
+        textField.textProperty().bindBidirectional(pField.textProperty());
+        pField.textProperty().bindBidirectional(textField.textProperty());
+
+        sceneTitle.setText("Welcome back,\nPlease enter your password");
+        btn.setText("Submit");
+
+        btn.setOnAction(event-> {
+
+            if(userList.isCorrectPassword(username, textField.getText())) {
+                new MainGUI(userList.loadUser(username,textField.getText()));
+                primaryStage.close();
+            } else {
+                Text error = new Text();
+                error.setText("Incorrect Password");
+                error.setFill(Color.FIREBRICK);
+                error.setFont(Font.font("Tahoma"));
+                grid.add(error, 0, 2);
+            }
+        });
+
+
+        grid.add(pField, 0, 1, 2, 1);
+        grid.add(showPass, 2, 1);
+
+
+    }
+
+    public void showNewUserMenu() {
+
+
+        sceneTitle.setText("Looks like you're new,\nplease enter a password.");
+        textField.setText("");
+
+        CheckBox showPass = new CheckBox();
+        showPass.setText("Show password?");
+        showPass.setFont(Font.font("tahoma", FontWeight.NORMAL, 15));
+
+        PasswordField pField1 = new PasswordField();
+        textField.visibleProperty().bind(showPass.selectedProperty());
+        pField1.promptTextProperty().bindBidirectional(textField.promptTextProperty());
+        pField1.visibleProperty().bind(showPass.selectedProperty().not());
+        pField1.textProperty().bindBidirectional(textField.textProperty());
+        grid.add(pField1, 0, 1, 2, 1);
+
+        PasswordField pField2 = new PasswordField();
+        TextField textField1 = new TextField();
+        pField2.textProperty().bindBidirectional(textField1.textProperty());
+        pField2.promptTextProperty().bindBidirectional(textField1.promptTextProperty());
+        pField2.setPromptText("Confirm password");
+        pField2.visibleProperty().bind(showPass.selectedProperty().not());
+        textField1.visibleProperty().bind(showPass.selectedProperty());
+
+        grid.add(pField2, 0, 2,2,1);
+        grid.add(textField1, 0,2,2,1);
+        grid.add(showPass,0, 3);
+
+        btn.setText("Submit");
+        btn.setOnAction(event ->{
+            String pass1 = textField.getText();
+            String pass2 = textField1.getText();
+            if(pass1.equals(pass2)) {
+                //Creates new user
+                User user = new User(username, pass1);
+                //Saves to file.
+                userList.saveUser(user, user.getPass());
+                //Passes new user into the mainGUI.
+                new MainGUI(user);
+                primaryStage.close();
+
+            } else {
+                Text error = new Text();
+                error.setText("Passwords don't match.");
+                error.setFill(Color.FIREBRICK);
+                error.setFont(Font.font("Tahoma"));
+                grid.add(error, 1, 3);
+            }
+        });
+
+    }
 }

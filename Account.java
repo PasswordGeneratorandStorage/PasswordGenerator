@@ -4,6 +4,7 @@ public class Account implements Serializable {
     private String password;
     private String username;
     private String accountName;
+
     private User blah;
     public Account(String accountName, String username, String password) {
         this.password = password;

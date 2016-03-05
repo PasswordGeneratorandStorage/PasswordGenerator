@@ -1,5 +1,6 @@
 import java.io.*;
 import java.security.MessageDigest;
+import java.util.Scanner;
 
 /**
  * This class is provided for encryption on the project
@@ -35,8 +36,9 @@ public class Encryption
      * @param encrypted ROT47 text
      * @return The input in english
      */
-    public static String decode(String encrypted, int key)
+    public static String decode(String encrypted, String pass)
     {
+        int key = getKey(pass);
         String outputString = "";
         for (int i = 0; i < encrypted.length(); i++)
         {
@@ -68,19 +70,9 @@ public class Encryption
         return (total / counter) / 2;
     }
 
-    public static void savePassword(String username, String password)
-    {
-        try
-        {
-            FileWriter writer = new FileWriter("src\\AppData\\users\\users.db", true);
-            PrintWriter printWriter = new PrintWriter(writer);
-            printWriter.println(getHash(username) + "," + getHash(password));
-            printWriter.close();
-        } catch (Exception e)
-        {
-            System.out.println("Database not found");
-        }
-    }
+
+
+
 
     public static String getHash(String base)
     {
@@ -88,7 +80,7 @@ public class Encryption
         {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
             byte[] hash = digest.digest(base.getBytes("UTF-8"));
-            StringBuffer hexString = new StringBuffer();
+            StringBuilder hexString = new StringBuilder();
 
             for (int i = 0; i < hash.length; i++)
             {
