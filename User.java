@@ -26,6 +26,15 @@ public class User implements Serializable {
         accounts.add(new Account(accountName, username, pass));
     }
 
+    public boolean deleteAccount(Account account) {
+        if(accounts.contains(account)) {
+            accounts.remove(account);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public boolean changePass(Account account, String newPass) {
         //If this user has this account, we save. If the account hasn't been added, return false
         if(accounts.contains(account)) {

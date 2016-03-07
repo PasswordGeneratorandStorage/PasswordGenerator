@@ -14,10 +14,14 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+
 public class LoginForm extends Application {
 
 
     public static void main(String[] args) {
+
+        new Installer().install();
+
         launch(args);
     }
 
@@ -36,13 +40,7 @@ public class LoginForm extends Application {
 
         //Loads list of users, so we can tell who's in the database and not.
         userList = new UserList();
-        User u = new User("user", "password");
-        u.addAccount("Google", "googes", "chicken");
-        u.addAccount("Reddit", "name", "chicken");
-        u.addAccount("Tests", "username", "blah");
-        u.addAccount("Test", "username", "blah");
-        u.addAccount("TESTING123", "TJLKSJDKFLJSDF", "KSDJFLKSDJF");
-        userList.saveUser(u, u.getPass());
+
 
         primaryStage.setTitle("Welcome");
         grid = new GridPane();
@@ -56,7 +54,7 @@ public class LoginForm extends Application {
         grid.add(sceneTitle, 0,0,2,1);
 
         textField = new TextField();
-        textField.setPromptText("Case sensitive");
+        textField.setPromptText("Case insensitive");
         grid.add(textField, 0, 1, 2, 1);
 
 
@@ -67,12 +65,14 @@ public class LoginForm extends Application {
         final Text actionTarget = new Text();
         grid.add(actionTarget, 1, 6);
         btn.setOnAction(event -> {
-            //TODO: Create and show MainGUI, passing in loaded User
             username = textField.getText();
             if(userList.checkIfUserExists(username)) showExistingUserLogin();
             else showNewUserMenu();
 
         });
+
+
+
 
         primaryStage.setScene(new Scene(grid));
         primaryStage.show();
@@ -121,7 +121,6 @@ public class LoginForm extends Application {
 
     public void showNewUserMenu() {
 
-
         sceneTitle.setText("Looks like you're new,\nplease enter a password.");
         textField.setText("");
 
@@ -134,7 +133,7 @@ public class LoginForm extends Application {
         pField1.promptTextProperty().bindBidirectional(textField.promptTextProperty());
         pField1.visibleProperty().bind(showPass.selectedProperty().not());
         pField1.textProperty().bindBidirectional(textField.textProperty());
-        grid.add(pField1, 0, 1, 2, 1);
+
 
         PasswordField pField2 = new PasswordField();
         TextField textField1 = new TextField();
@@ -144,9 +143,16 @@ public class LoginForm extends Application {
         pField2.visibleProperty().bind(showPass.selectedProperty().not());
         textField1.visibleProperty().bind(showPass.selectedProperty());
 
+        Text tip = new Text();
+        tip.setText("Write down this password, you cannot login without it.");
+        tip.setWrappingWidth(150);
+        tip.setFont(Font.font("tahoma", FontWeight.LIGHT, 12));
+
+        grid.add(pField1, 0, 1, 2, 1);
         grid.add(pField2, 0, 2,2,1);
         grid.add(textField1, 0,2,2,1);
         grid.add(showPass,0, 3);
+        grid.add(tip,0,4,2,1);
 
         btn.setText("Submit");
         btn.setOnAction(event ->{
@@ -169,6 +175,7 @@ public class LoginForm extends Application {
                 grid.add(error, 1, 3);
             }
         });
+
 
     }
 }

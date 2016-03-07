@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -13,8 +14,10 @@ public class Generator {
 
 
     public Generator()  {
+
+
         numFails = 0;
-        File list = new File("src\\AppData\\words.txt");
+        File list = new File("src/AppData/words.txt");
         r = new Random();
         words = new ArrayList<>();
         try {
@@ -71,25 +74,28 @@ public class Generator {
      * @return randomized password that fits specified criteria.
      ********************************************************************/
     public String generatePass(int charLowLimit, int charLimit, int digitCount, boolean genSpecial) {
-        String password = "";
-        //Subtracts number of letters from the limit that are going to be numbers. (Stops too many characters)
-        charLimit = charLimit - digitCount;
+        if (charLowLimit < charLimit) {
+            String password = "";
+            //Subtracts number of letters from the limit that are going to be numbers. (Stops too many characters)
+            charLimit = charLimit - digitCount;
 
-        int numWords = charLimit / 7;
-        boolean correctSize = false;
-        while(!correctSize) {
-            password = generateWords(numWords);
-            if(password.length() <= charLimit && password.length() >= charLowLimit) {
-                correctSize = true;
-            } else {
-                numFails++;
+            int numWords = charLimit / 7;
+            boolean correctSize = false;
+            while (!correctSize) {
+                password = generateWords(numWords);
+                if (password.length() <= charLimit && password.length() >= charLowLimit) {
+                    correctSize = true;
+                } else {
+                    numFails++;
+                }
             }
+            if (genSpecial) {
+                password = genSpecial() + password;
+            }
+            password = password + genDigits(digitCount);
+            return password;
         }
-        if(genSpecial) {
-            password = genSpecial() + password;
-        }
-        password = password + genDigits(digitCount);
-        return password;
+        return null;
     }
 
     /***********************************************************
