@@ -1,5 +1,6 @@
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -7,6 +8,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -68,10 +71,14 @@ public class LoginForm extends Application {
             else showNewUserMenu();
 
         });
-
-
-
-
+        textField.setOnKeyPressed(ke -> {
+            if(!ke.getCode().equals(KeyCode.ENTER))
+                return;
+            username = textField.getText();
+            if (userList.checkIfUserExists(username)) showExistingUserLogin();
+            else showNewUserMenu();
+        }
+        );
         primaryStage.setScene(new Scene(grid));
         primaryStage.show();
     }
@@ -93,28 +100,35 @@ public class LoginForm extends Application {
         textField.textProperty().bindBidirectional(pField.textProperty());
         pField.textProperty().bindBidirectional(textField.textProperty());
 
-        sceneTitle.setText("Welcome back,\nPlease enter your password");
+        sceneTitle.setText("Welcome " + username + ",\nPlease enter your password");
         btn.setText("Submit");
-
         btn.setOnAction(event-> {
-
-            if(userList.isCorrectPassword(username, textField.getText())) {
-                new MainGUI(userList.loadUser(username,textField.getText()));
-                primaryStage.close();
-            } else {
-                Text error = new Text();
-                error.setText("Incorrect Password");
-                error.setFill(Color.FIREBRICK);
-                error.setFont(Font.font("Tahoma"));
-                grid.add(error, 0, 2);
-            }
+            loginCheck();
+        });
+        pField.setOnKeyPressed(ke -> {
+            if(!ke.getCode().equals(KeyCode.ENTER))
+                return;
+            loginCheck();
         });
 
 
         grid.add(pField, 0, 1, 2, 1);
         grid.add(showPass, 2, 1);
+        pField.requestFocus();
 
 
+    }
+    public void loginCheck(){
+        if(userList.isCorrectPassword(username, textField.getText())) {
+            new MainGUI(userList.loadUser(username,textField.getText()));
+            primaryStage.close();
+        } else {
+            Text error = new Text();
+            error.setText("Incorrect Password");
+            error.setFill(Color.FIREBRICK);
+            error.setFont(Font.font("Tahoma"));
+            grid.add(error, 0, 2);
+        }
     }
 
     public void showNewUserMenu() {
@@ -151,30 +165,38 @@ public class LoginForm extends Application {
         grid.add(textField1, 0,2,2,1);
         grid.add(showPass,0, 3);
         grid.add(tip,0,4,2,1);
+        pField1.requestFocus();
 
         btn.setText("Submit");
         btn.setOnAction(event ->{
-            String pass1 = textField.getText();
-            String pass2 = textField1.getText();
-            if(pass1.equals(pass2)) {
-                //Creates new user
-                User user = new User(username, pass1);
-                //Saves to file.
-                userList.saveUser(user, user.getPass());
-                userList.savePassword(user.getUsersName(), user.getPass());
-                //Passes new user into the mainGUI.
-                new MainGUI(user);
-                primaryStage.close();
-
-            } else {
-                Text error = new Text();
-                error.setText("Passwords don't match.");
-                error.setFill(Color.FIREBRICK);
-                error.setFont(Font.font("Tahoma"));
-                grid.add(error, 1, 3);
-            }
+            createUser(textField1);
         });
+        pField2.setOnKeyPressed(ke -> {
+            if(!ke.getCode().equals(KeyCode.ENTER))
+                return;
+            createUser(textField1);
+        });
+    }
+    public void createUser(TextField textField1)
+    {
+        String pass1 = textField.getText();
+        String pass2 = textField1.getText();
+        if(pass1.equals(pass2)) {
+            //Creates new user
+            User user = new User(username, pass1);
+            //Saves to file.
+            userList.saveUser(user, user.getPass());
+            userList.savePassword(user.getUsersName(), user.getPass());
+            //Passes new user into the mainGUI.
+            new MainGUI(user);
+            primaryStage.close();
 
-
+        } else {
+            Text error = new Text();
+            error.setText("Passwords don't match.");
+            error.setFill(Color.FIREBRICK);
+            error.setFont(Font.font("Tahoma"));
+            grid.add(error, 1, 3);
+        }
     }
 }

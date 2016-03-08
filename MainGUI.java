@@ -39,7 +39,7 @@ public class MainGUI extends Application {
             System.out.println(a.getAccountName());
         }
         Stage stage = new Stage();
-        stage.setTitle("Welcome" + user.getUsersName());
+        stage.setTitle("Welcome " + user.getUsersName());
         borderPane = new BorderPane();
         borderPane.setBackground(new Background(new BackgroundFill(Paint.valueOf("#ECEFF1"), CornerRadii.EMPTY, Insets.EMPTY)));
         setNavigation();
