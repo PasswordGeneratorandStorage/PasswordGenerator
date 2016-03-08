@@ -20,13 +20,6 @@ import javafx.stage.Stage;
 
 public class LoginForm extends Application {
 
-
-    public static void main(String[] args) {
-
-        launch(args);
-    }
-
-
     String username;
     Stage primaryStage;
     Text sceneTitle;
@@ -35,14 +28,15 @@ public class LoginForm extends Application {
     GridPane grid;
     UserList userList;
 
-    public void start(Stage primaryStage) throws Exception {
-
-        this.primaryStage = primaryStage;
+    public void start(Stage primaryStage) throws Exception
+    {
+    }
+    LoginForm()
+    {
+        this.primaryStage = new Stage();
 
         //Loads list of users, so we can tell who's in the database and not.
         userList = new UserList();
-
-
         primaryStage.setTitle("Welcome");
         grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
@@ -80,7 +74,8 @@ public class LoginForm extends Application {
         }
         );
         primaryStage.setScene(new Scene(grid));
-        primaryStage.show();
+        if(userList.installed)
+            primaryStage.show();
     }
 
     public void showExistingUserLogin() {

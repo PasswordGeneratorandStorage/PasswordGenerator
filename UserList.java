@@ -10,22 +10,39 @@ import java.util.Scanner;
 public class UserList {
 
 
-
+    public  boolean installed;
     ArrayList<String> userList;
     String DIRECTORY;
+	String CHOSEN_LOCATION;
     public UserList() {
         userList = new ArrayList<>();
         DIRECTORY = System.getProperty("user.home");
         DIRECTORY = DIRECTORY + "/PasswordGenerator/";
         File tmp = new File(DIRECTORY + "AppData/");
         if(!tmp.exists()) {
-            new Installer().install();
-        }
+            installed = false;
+            Installer temp = new Installer();
+			CHOSEN_LOCATION = temp.CHOSEN_LOCATION;
+			CHOSEN_LOCATION += "/PasswordGenerator/";
+        } else {
+            installed = true;
+			try
+			{
+			Scanner fileLocation = new Scanner(new File(DIRECTORY+"location.ian"));
+			CHOSEN_LOCATION = fileLocation.nextLine();
+			CHOSEN_LOCATION += "/PasswordGenerator/";
+			}
+			catch(Exception e)
+			{
+				System.out.println("Unknown error");
+			}
+			
+		}
     }
 
     public boolean checkIfUserExists(String username) {
         try{
-            Scanner fileIn = new Scanner(new FileReader(DIRECTORY + "/AppData/users/users.txt"));
+            Scanner fileIn = new Scanner(new FileReader(CHOSEN_LOCATION + "/AppData/users/users.txt"));
             while(fileIn.hasNext()) {
                 //Reads in line.
                 String storedUsername = fileIn.nextLine();
@@ -46,7 +63,7 @@ public class UserList {
 
     public boolean isCorrectPassword(String username, String password) {
         try{
-            Scanner fileIn = new Scanner(new FileReader(DIRECTORY + "/AppData/users/users.txt"));
+            Scanner fileIn = new Scanner(new FileReader(CHOSEN_LOCATION + "/AppData/users/users.txt"));
             while(fileIn.hasNext()) {
                 //Reads in line.
                 String storedPassword = fileIn.nextLine();
@@ -75,7 +92,7 @@ public class UserList {
      */
     public void saveUser(User user, String pass) {
 
-        String fileName = DIRECTORY + "AppData/users/" + Encryption.getHash(user.getUsersName()) + ".db";
+        String fileName = CHOSEN_LOCATION + "/AppData/users/" + Encryption.getHash(user.getUsersName()) + ".db";
 
         User encryptedUser = encryptUser(user, pass);
 
@@ -129,7 +146,7 @@ public class UserList {
     {
         try
         {
-            FileWriter writer = new FileWriter(DIRECTORY + "/AppData/users/users.txt", true);
+            FileWriter writer = new FileWriter(CHOSEN_LOCATION + "/AppData/users/users.txt", true);
             PrintWriter printWriter = new PrintWriter(writer);
             printWriter.println(Encryption.getHash(username) + "," + Encryption.getHash(password));
             printWriter.close();
@@ -148,7 +165,7 @@ public class UserList {
      */
     public User loadUser(String name, String pass) {
 
-        String fileName = DIRECTORY + "AppData/users/" + Encryption.getHash(name) + ".db";
+        String fileName = CHOSEN_LOCATION + "/AppData/users/" + Encryption.getHash(name) + ".db";
         User user = null;
         try {
             ObjectInputStream userIn = new ObjectInputStream(new FileInputStream(fileName));

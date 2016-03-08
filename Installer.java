@@ -1,26 +1,106 @@
+import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+
 import java.io.*;
 import java.util.Scanner;
 
 /**
  * Hopefully this shit works.
  */
-public class Installer {
+public class Installer extends Application{
+    public static void main(String args[])
+    {
+        launch(args);
+    }
+
+	public String CHOSEN_LOCATION;
+    public File selectedDirectory = new File(System.getProperty("user.home"));
+    Text filePresenter;
+    public void start(Stage primaryStage) throws Exception    {
+		Text sceneTitle;
+		TextField textField;
+		Button btn;
+		GridPane grid;
+        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.setAlwaysOnTop(true);
+        grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+		
+		sceneTitle = new Text("Welcome to the Password Storage and Generator.");
+        sceneTitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        grid.add(sceneTitle, 0,0,2,1);
+        Text action = new Text("Please choose install directory");
+        action.setFont(Font.font("Tahoma", FontWeight.NORMAL, 10));
+        grid.add(action, 0,1,2,1);
 
 
+        btn = new Button("Choose directory");
+        Button next = new Button("Install");
+        btn.setAlignment(Pos.CENTER_LEFT);
+        grid.add(btn, 0,3,1,1);
+        next.setAlignment(Pos.CENTER_RIGHT);
+        grid.add(next, 2, 8);
 
-    public void install() {
+        filePresenter = new Text(selectedDirectory+"\\PasswordGenerator");
+        filePresenter.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+        grid.add(filePresenter, 0,4,2,1);
+		btn.setOnAction(event -> {
+			String USER_HOME = System.getProperty("user.home");
+			File dir = new File(USER_HOME);
+			DirectoryChooser chooser = new DirectoryChooser();
+			chooser.setTitle("Choose Install Location");
+			chooser.setInitialDirectory(dir);
+			selectedDirectory = chooser.showDialog(primaryStage);
+            filePresenter.setText(selectedDirectory.toString()+"\\PasswordGenerator");
+        });
+        next.setOnAction(event -> {
+           install(selectedDirectory);
+            primaryStage.close();
+            new LoginForm();
+        });
+        UserList temp = new UserList();
+        if(!temp.installed)
+        {
+            primaryStage.setScene(new Scene(grid));
+            primaryStage.show();
+        } else
+        {
+            new LoginForm();
+        }
+    }
 
-        String USER_HOME = System.getProperty("user.home");
+    public void install(File chosenDirectory) {
 
-        File dir = new File(USER_HOME+"/PasswordGenerator/AppData/users/");
+		CHOSEN_LOCATION = chosenDirectory.toString();
+		String USER_HOME = System.getProperty("user.home");
+		File tempHolder = new File(USER_HOME+"/PasswordGenerator/");
+		tempHolder.mkdirs();
+        File dir = new File(chosenDirectory.toString()+"/PasswordGenerator/AppData/users/");
         dir.mkdirs();
-
+        String BASE = chosenDirectory.toString();
         InputStream file = getClass().getResourceAsStream("words.txt");
         Scanner readIn = null;
         readIn = new Scanner(file);
         try{
-            PrintWriter pw = new PrintWriter(new FileWriter(USER_HOME + "/PasswordGenerator/AppData/words.txt"));
-
+			PrintWriter location = new PrintWriter(new FileWriter(USER_HOME+ "/PasswordGenerator/location.ian"));
+			location.println(chosenDirectory.toString());
+			location.close();
+            PrintWriter pw = new PrintWriter(new FileWriter(BASE + "/PasswordGenerator/AppData/words.txt"));
             while(readIn.hasNext()) {
                 pw.println(readIn.nextLine());
             }
