@@ -1,6 +1,5 @@
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
@@ -10,14 +9,11 @@ public class Generator {
 
     private Random r;
     private ArrayList<String> words;
-    private int numFails;
-
 
     public Generator()  {
 
-
-        numFails = 0;
-        File list = new File("src/AppData/words.txt");
+        String directory = System.getProperty("user.home") + "/PasswordGenerator/AppData/";
+        File list = new File(directory + "words.txt");
         r = new Random();
         words = new ArrayList<>();
         try {
@@ -26,7 +22,7 @@ public class Generator {
             words.add(s.nextLine());
         }
         } catch (FileNotFoundException fnf) {
-        fnf.printStackTrace();
+            fnf.printStackTrace();
         }
         r = new Random();
     }
@@ -47,10 +43,29 @@ public class Generator {
      * @param numWords number of words desired
      * @return String of capitalized words
      */
-    private String generateWords(int numWords) {
+    private String generateWords(int numWords, boolean genSpecial) {
+
+
         String words = "";
+        if(numWords == 1) {
+            String pass = generateWord();
+            if(genSpecial) {
+                pass = pass + genSpecial();
+            }
+            return pass;
+        }
+        char special = genSpecial();
         for(int i = 0; i < numWords; i++) {
-            words = words+capitalize(generateWord());
+            if(genSpecial) {
+                if(i == 0) {
+                    words = capitalize(generateWord());
+                } else {
+                    words = words + special + capitalize(generateWord());
+                }
+            } else {
+                words = words + capitalize(generateWord());
+            }
+
         }
         return words;
     }
@@ -82,16 +97,12 @@ public class Generator {
             int numWords = charLimit / 7;
             boolean correctSize = false;
             while (!correctSize) {
-                password = generateWords(numWords);
+                password = generateWords(numWords, genSpecial);
                 if (password.length() <= charLimit && password.length() >= charLowLimit) {
                     correctSize = true;
-                } else {
-                    numFails++;
                 }
             }
-            if (genSpecial) {
-                password = genSpecial() + password;
-            }
+
             password = password + genDigits(digitCount);
             return password;
         }

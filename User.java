@@ -1,8 +1,9 @@
 
-import java.io.Serializable;
-import java.util.ArrayList;
 
-public class User implements Serializable {
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class User {
 
     private String pass;
     private ArrayList<Account> accounts;
@@ -22,8 +23,11 @@ public class User implements Serializable {
         return pass;
     }
 
-    public void addAccount(String accountName, String username, String pass) {
-        accounts.add(new Account(accountName, username, pass));
+    public Account addAccount(String accountName, String username, String pass) {
+        Account account = new Account(accountName, username,pass);
+        accounts.add(account);
+        Collections.sort(accounts);
+        return account;
     }
 
     public boolean deleteAccount(Account account) {
@@ -63,4 +67,6 @@ public class User implements Serializable {
         }
         return account;
     }
+
+
 }

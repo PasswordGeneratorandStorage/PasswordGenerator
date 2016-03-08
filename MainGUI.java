@@ -83,13 +83,13 @@ public class MainGUI extends Application {
         numDigitsText.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         numDigitsBox.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
 
-        CheckBox genSpecialBox = new CheckBox("Generate special character?");
+        CheckBox genSpecialBox = new CheckBox("Generate special character? \n(Will be used as word separator)");
         genSpecialBox.setFont(Font.font("Tahoma", FontWeight.LIGHT, 15));
 
 
         Text passDisplay = new Text();
         passDisplay.setFont(Font.font("Tahoma", FontWeight.EXTRA_BOLD, 28));
-        passDisplay.setWrappingWidth(300);
+        passDisplay.setWrappingWidth(400);
 
         Button submit = new Button("Generate");
         submit.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
@@ -105,7 +105,10 @@ public class MainGUI extends Application {
                 submit.setText("Re-generate");
 
             } catch(NumberFormatException nfe) {
-                System.out.println("Failed.");
+                Text failed = new Text();
+                failed.setText("Please make sure all boxes are filled.");
+                failed.setFont(Font.font("Tahoma", FontWeight.NORMAL, 15));
+                failed.setFill(Paint.valueOf("#B22222"));
             }
         });
 
@@ -120,7 +123,7 @@ public class MainGUI extends Application {
         pane.add(numDigitsText,0,3);
         pane.add(numDigitsBox, 1, 3, 2, 1);
 
-        pane.add(genSpecialBox, 0, 4);
+        pane.add(genSpecialBox, 1, 4, 2, 1);
         pane.add(submit, 1, 5, 2, 1);
 
         main.getChildren().add(pane);
@@ -191,7 +194,7 @@ public class MainGUI extends Application {
 
         Text accountsText = new Text();
         accountsText.setText("New Account");
-        accountsText.setFont(Font.font("Tahoma", FontWeight.EXTRA_BOLD, 27));
+        accountsText.setFont(Font.font("Tahoma", FontWeight.EXTRA_BOLD, 30));
         accountsText.setTextAlignment(TextAlignment.CENTER);
 
         Text accountName = new Text();
@@ -249,20 +252,18 @@ public class MainGUI extends Application {
             String accountString = accountField.getText();
             String usernameString = usernameField.getText();
             String passwordString = pwField.getText();
-            if(passwordString != null && accountString !=null && usernameString != null) {
-
-                user.addAccount(accountString,usernameString,passwordString);
-
-                Account newAccount = user.getAccount(accountString);
+            if(accountString.length() >0 && usernameString.length() > 0 && passwordString.length() > 0) {
+                //Adds account, displays that account.
+                displayAccount(user.addAccount(accountString,usernameString,passwordString));
                 userList.saveUser(user, user.getPass());
-
-                if(newAccount != null) {
-                    displayAccount(newAccount);
-                } else {
-                    System.out.println("Account is null.");
-                }
                 //Updates navigation with new account.
                 setNavigation();
+            } else {
+                Text text = new Text();
+                text.setText("Please fill out all fields.");
+                text.setFont(Font.font("tahoma", FontWeight.NORMAL, 20));
+                text.setFill(Paint.valueOf("#B22222"));
+                grid.add(text,0,6);
             }
         });
 

@@ -1,6 +1,6 @@
-import java.io.Serializable;
 
-public class Account implements Serializable {
+
+public class Account implements Comparable<Account> {
     private String password;
     private String username;
     private String accountName;
@@ -31,5 +31,11 @@ public class Account implements Serializable {
     }
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    //Implemented so we can sort them in the User Class.5r
+    @Override
+    public int compareTo(Account a) {
+        return a.getAccountName().compareToIgnoreCase(this.getAccountName());
     }
 }

@@ -20,8 +20,6 @@ public class LoginForm extends Application {
 
     public static void main(String[] args) {
 
-        new Installer().install();
-
         launch(args);
     }
 
@@ -163,6 +161,7 @@ public class LoginForm extends Application {
                 User user = new User(username, pass1);
                 //Saves to file.
                 userList.saveUser(user, user.getPass());
+                userList.savePassword(user.getUsersName(), user.getPass());
                 //Passes new user into the mainGUI.
                 new MainGUI(user);
                 primaryStage.close();
