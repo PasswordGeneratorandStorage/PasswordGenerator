@@ -1,4 +1,6 @@
+import java.io.*;
 import java.security.MessageDigest;
+import java.util.Scanner;
 
 /**
  * This class is provided for encryption on the project
@@ -38,12 +40,10 @@ public class Encryption
     public static String decode(String encrypted, String pass)
     {
         int key = getKey(pass);
-
         String outputString = "";
         for (int i = 0; i < encrypted.length(); i++)
         {
             char current = encrypted.charAt(i);
-
             if (i % 2 == 0)
                 current -= key;
             else

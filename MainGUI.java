@@ -255,8 +255,11 @@ public class MainGUI extends Application {
             if(accountString.length() >0 && usernameString.length() > 0 && passwordString.length() > 0) {
                 //Adds account, displays that account.
                 displayAccount(user.addAccount(accountString,usernameString,passwordString));
+
                 userList.saveUser(user, user.getPass());
+
                 //Updates navigation with new account.
+
                 setNavigation();
             } else {
                 Text text = new Text();

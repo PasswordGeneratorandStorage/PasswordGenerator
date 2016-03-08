@@ -1,9 +1,10 @@
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class User {
+public class User implements Serializable, Cloneable {
 
     private String pass;
     private ArrayList<Account> accounts;
@@ -67,6 +68,17 @@ public class User {
         }
         return account;
     }
+    public Object clone() {
+        Object o = null;
+        try {
+            o = super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return o;
+    }
+
+
 
 
 }

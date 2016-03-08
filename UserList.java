@@ -4,9 +4,11 @@
  */
 
 import java.io.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 public class UserList {
+
 
 
     ArrayList<String> userList;
@@ -14,17 +16,16 @@ public class UserList {
     public UserList() {
         userList = new ArrayList<>();
         DIRECTORY = System.getProperty("user.home");
-        DIRECTORY = DIRECTORY + "/PasswordGenerator";
-        File tmp = new File(DIRECTORY + "/AppData/");
+        DIRECTORY = DIRECTORY + "/PasswordGenerator/";
+        File tmp = new File(DIRECTORY + "AppData/");
         if(!tmp.exists()) {
             new Installer().install();
-            System.out.println("Installed.");
         }
     }
 
     public boolean checkIfUserExists(String username) {
         try{
-            Scanner fileIn = new Scanner(new FileReader(DIRECTORY + "/AppData/users/users.db"));
+            Scanner fileIn = new Scanner(new FileReader(DIRECTORY + "/AppData/users/users.txt"));
             while(fileIn.hasNext()) {
                 //Reads in line.
                 String storedUsername = fileIn.nextLine();
@@ -45,7 +46,7 @@ public class UserList {
 
     public boolean isCorrectPassword(String username, String password) {
         try{
-            Scanner fileIn = new Scanner(new FileReader(DIRECTORY + "/AppData/users/users.db"));
+            Scanner fileIn = new Scanner(new FileReader(DIRECTORY + "/AppData/users/users.txt"));
             while(fileIn.hasNext()) {
                 //Reads in line.
                 String storedPassword = fileIn.nextLine();
@@ -74,33 +75,50 @@ public class UserList {
      */
     public void saveUser(User user, String pass) {
 
+        String fileName = DIRECTORY + "AppData/users/" + user.getUsersName() + ".db";
 
-        savePassword(user.getUsersName(), pass);
+        User encryptedUser = encryptUser(user, pass);
 
-        PrintWriter outputFile = null;
-        BufferedWriter output = null;
+
         try {
-            output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(DIRECTORY + "/AppData/users/" + user.getUsersName() + ".db"), "ASCII"));
-            outputFile = new PrintWriter(DIRECTORY + "/AppData/users/" + user.getUsersName() +".db");
-        } catch (FileNotFoundException e)
-        {
-            System.out.println("Creating user save file");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } finally
-        {
-            for(Account a:user.getAccounts())
-            {
-                String original = (a.getAccountName()+","+a.getUsername()+","+a.getPass());
-                assert outputFile != null;
-                outputFile.println(Encryption.encode(original, pass));
-                output.write(Encryption.encode(original, pass));
-                output.write("\r\n");
-            }
-            assert outputFile != null;
-            outputFile.close();
+            File file = new File(fileName);
+            ObjectOutputStream userOut = new ObjectOutputStream(new FileOutputStream(file));
+            userOut.writeObject(encryptedUser);
+            decryptUser(user, pass);
+            userOut.close();
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
 
+    }
+
+    private User encryptUser(User user, String pass) {
+
+        for(Account a: user.getAccounts()) {
+            String encryptedAccount = Encryption.encode(a.getAccountName(), pass);
+            String encryptedUserName = Encryption.encode(a.getUsername(), pass);
+            String encryptedPass = Encryption.encode(a.getPass(), pass);
+
+            a.setAccountName(encryptedAccount);
+            a.setUsername(encryptedUserName);
+            a.setPass(encryptedPass);
+        }
+        return user;
+    }
+
+    private User decryptUser(User user, String pass) {
+        assert user !=null && pass !=null;
+        for(Account a: user.getAccounts()) {
+
+            String decryptedAccount = Encryption.decode(a.getAccountName(), pass);
+            String decryptedUserName = Encryption.decode(a.getUsername(), pass);
+            String decryptedPass = Encryption.decode(a.getPass(), pass);
+
+            a.setAccountName(decryptedAccount);
+            a.setUsername(decryptedUserName);
+            a.setPass(decryptedPass);
+        }
+        return user;
     }
 
     /**
@@ -112,7 +130,7 @@ public class UserList {
     {
         try
         {
-            FileWriter writer = new FileWriter(DIRECTORY + "/AppData/users/users.db", true);
+            FileWriter writer = new FileWriter(DIRECTORY + "/AppData/users/users.txt", true);
             PrintWriter printWriter = new PrintWriter(writer);
             printWriter.println(Encryption.getHash(username) + "," + Encryption.getHash(password));
             printWriter.close();
@@ -131,27 +149,16 @@ public class UserList {
      */
     public User loadUser(String name, String pass) {
 
-        User finalUser = new User(name, pass);
-        Scanner readDB;
-        try
-        {
-            BufferedReader input = new BufferedReader(new InputStreamReader(new FileInputStream(DIRECTORY + "/AppData/users/" + name + ".db"), "ASCII"));
-            System.out.println("Trying to read from" + DIRECTORY + "/AppData/users/" + name + ".db");
-            readDB = new Scanner(input);
-            readDB.useDelimiter("\r\n");
-            while(readDB.hasNext()) {
-                String[] delimited = Encryption.decode(readDB.next(), pass).split(",");
-                if(delimited.length == 3) {
-                    finalUser.addAccount(delimited[0],delimited[1],delimited[2]);
-                }
-            }
-        } catch (FileNotFoundException|UnsupportedEncodingException e)
-        {
-            System.out.println(e.getMessage());
-            System.out.println("User not found.");
+        String fileName = DIRECTORY + "AppData/users/" + name + ".db";
+        User user = null;
+        try {
+            ObjectInputStream userIn = new ObjectInputStream(new FileInputStream(fileName));
+            user = (User) userIn.readObject();
+        } catch(IOException|ClassNotFoundException io) {
+            System.out.println("Failed to load.");
         }
+        decryptUser(user, pass);
+        return user;
 
-
-        return finalUser;
     }
 }

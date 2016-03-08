@@ -1,6 +1,6 @@
+import java.io.Serializable;
 
-
-public class Account implements Comparable<Account> {
+public class Account implements Comparable<Account>, Serializable{
     private String password;
     private String username;
     private String accountName;
