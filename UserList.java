@@ -75,10 +75,9 @@ public class UserList {
      */
     public void saveUser(User user, String pass) {
 
-        String fileName = DIRECTORY + "AppData/users/" + user.getUsersName() + ".db";
+        String fileName = DIRECTORY + "AppData/users/" + Encryption.getHash(user.getUsersName()) + ".db";
 
         User encryptedUser = encryptUser(user, pass);
-
 
         try {
             File file = new File(fileName);
@@ -149,7 +148,7 @@ public class UserList {
      */
     public User loadUser(String name, String pass) {
 
-        String fileName = DIRECTORY + "AppData/users/" + name + ".db";
+        String fileName = DIRECTORY + "AppData/users/" + Encryption.getHash(name) + ".db";
         User user = null;
         try {
             ObjectInputStream userIn = new ObjectInputStream(new FileInputStream(fileName));
