@@ -1,18 +1,20 @@
-import java.io.*;
 import java.security.MessageDigest;
-import java.util.Scanner;
 
 /**
  * This class is provided for encryption on the project
+ *
+ * @author Ian Hoegen
  */
 
 public class Encryption
 {
     /**
-     * This method returns a string containing the ROT47 equivalent of the input
+     * This method returns a string containing the encrypted equivalent of the input
+     * For every other letter in the string, it will add a number that is generated from the
+     * key method. It then returns this value.
      *
      * @param original The string that is to be encrypted
-     * @return the input in ROT47
+     * @return the input in encrypted form
      */
     public static String encode(String original, String pass)
     {
@@ -32,9 +34,10 @@ public class Encryption
     }
 
     /**
-     * This method returns the English equivalent of a ROT47 String
+     * This method returns the English equivalent of the encrypted String
+     * For every other letter in the encrypted string, it will add or subtract a to the character.
      *
-     * @param encrypted ROT47 text
+     * @param encrypted The encrypted string
      * @return The input in english
      */
     public static String decode(String encrypted, String pass)
@@ -71,10 +74,13 @@ public class Encryption
         return (total / counter) / 2;
     }
 
-
-
-
-
+    /**
+     * This method generates a hash by means of SHA-256, to be used as a way to store the master username and
+     * password
+     *
+     * @param base The string to be hashed
+     * @return The hashed String
+     */
     public static String getHash(String base)
     {
         try

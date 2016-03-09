@@ -1,4 +1,5 @@
 # Windows image file caches
+META-INF/
 Thumbs.db
 ehthumbs.db
 src/*
