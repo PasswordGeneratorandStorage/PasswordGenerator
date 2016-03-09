@@ -2,4 +2,6 @@
 A GUI tool to store and create passwords
 
 #How to run:
-Run LoginForm.java
+Run Installer.java
+
+Download the jar and install.
