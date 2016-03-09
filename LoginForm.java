@@ -1,6 +1,4 @@
-
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,7 +7,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -38,6 +35,7 @@ public class LoginForm extends Application {
         //Loads list of users, so we can tell who's in the database and not.
         userList = new UserList();
         primaryStage.setTitle("Welcome");
+        primaryStage.resizableProperty().setValue(Boolean.FALSE);
         grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -97,9 +95,7 @@ public class LoginForm extends Application {
 
         sceneTitle.setText("Welcome " + username + ",\nPlease enter your password");
         btn.setText("Submit");
-        btn.setOnAction(event-> {
-            loginCheck();
-        });
+        btn.setOnAction(event-> loginCheck());
         pField.setOnKeyPressed(ke -> {
             if(!ke.getCode().equals(KeyCode.ENTER))
                 return;
@@ -163,9 +159,7 @@ public class LoginForm extends Application {
         pField1.requestFocus();
 
         btn.setText("Submit");
-        btn.setOnAction(event ->{
-            createUser(textField1);
-        });
+        btn.setOnAction(event ->createUser(textField1));
         pField2.setOnKeyPressed(ke -> {
             if(!ke.getCode().equals(KeyCode.ENTER))
                 return;

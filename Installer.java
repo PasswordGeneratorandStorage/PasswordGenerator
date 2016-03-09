@@ -3,15 +3,12 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 
 import java.io.*;
 import java.util.Scanner;
@@ -30,11 +27,10 @@ public class Installer extends Application{
     Text filePresenter;
     public void start(Stage primaryStage) throws Exception    {
 		Text sceneTitle;
-		TextField textField;
 		Button btn;
 		GridPane grid;
-        primaryStage.initStyle(StageStyle.UNDECORATED);
-        primaryStage.setAlwaysOnTop(true);
+        primaryStage.resizableProperty().setValue(Boolean.FALSE);
+        primaryStage.setTitle("Install");
         grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
@@ -94,7 +90,7 @@ public class Installer extends Application{
         dir.mkdirs();
         String BASE = chosenDirectory.toString();
         InputStream file = getClass().getResourceAsStream("words.txt");
-        Scanner readIn = null;
+        Scanner readIn;
         readIn = new Scanner(file);
         try{
 			PrintWriter location = new PrintWriter(new FileWriter(USER_HOME+ "/PasswordGenerator/location.ian"));
