@@ -73,8 +73,12 @@ public class Installer extends Application
             DirectoryChooser chooser = new DirectoryChooser();
             chooser.setTitle("Choose Install Location");
             chooser.setInitialDirectory(dir);
-            selectedDirectory = chooser.showDialog(primaryStage);
-            filePresenter.setText(selectedDirectory.toString() + "\\PasswordGenerator");
+            File file = chooser.showDialog(primaryStage);
+            if(file!=null)
+            {
+                selectedDirectory = file;
+                filePresenter.setText(selectedDirectory.toString() + "\\PasswordGenerator");
+            }
         });
         next.setOnAction(event -> {
             install(selectedDirectory);

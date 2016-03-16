@@ -13,6 +13,8 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
+import javafx.scene.image.Image;
+
 
 import java.awt.*;
 import java.awt.datatransfer.Clipboard;
@@ -47,6 +49,7 @@ public class MainGUI extends Application {
         stage.setMaximized(true);
         stage.setScene(new Scene(borderPane));
         stage.show();
+        stage.getIcons().add(new Image("icon.png"));
     }
     public void start(Stage primaryStage) throws Exception {
         //Can't use, already used in LoginForm....(Throws exception) Everything goes in the constructor, or in methods called by the constructor.
