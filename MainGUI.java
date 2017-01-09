@@ -33,7 +33,7 @@ public class MainGUI extends Application {
     public MainGUI(User user) {
 
         clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-
+	int i = 0;
         userList = new UserList();
         generator = new Generator();
         this.user = user;
